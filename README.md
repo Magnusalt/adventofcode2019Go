@@ -1,3 +1,3 @@
 # adventofcode2019Go
 
-Never used Go before, don't judge to hard :)
+Never used Go before, so please be kind :)
