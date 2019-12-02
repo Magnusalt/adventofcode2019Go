@@ -7,13 +7,7 @@ import (
 	"strconv"
 )
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
-func first() {
+func firstDay1() {
 	f, err := os.Open("day1.txt")
 	check(err)
 	defer f.Close()
@@ -38,7 +32,7 @@ func recSum(currentSum int64, moduleWeight int64) int64 {
 	return recSum(currentSum+nextWeight, nextWeight)
 }
 
-func second() {
+func secondDay1() {
 	f, err := os.Open("day1.txt")
 	check(err)
 	defer f.Close()
@@ -52,9 +46,4 @@ func second() {
 		sum += recSum(0, parsedLine)
 	}
 	fmt.Println(sum)
-}
-
-func main() {
-	//first()
-	second()
 }
