@@ -7,5 +7,5 @@ func check(e error) {
 }
 
 func main() {
-	firstDay2()
+	secondDay2()
 }
