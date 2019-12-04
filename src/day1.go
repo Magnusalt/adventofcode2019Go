@@ -22,7 +22,7 @@ func firstDay1() {
 	fmt.Println(sum)
 }
 
-func recSum(currentSum int64, moduleWeight int64) int64 {
+func recSum(currentSum int, moduleWeight int) int {
 	nextWeight := ((moduleWeight / 3) - 2)
 
 	if nextWeight <= 0 {
@@ -37,13 +37,36 @@ func secondDay1() {
 	check(err)
 	defer f.Close()
 	scanner := bufio.NewScanner(f)
-	sum := int64(0)
+	sum := 0
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		parsedLine, parseError := strconv.ParseInt(line, 10, 32)
+		parsedLine, parseError := strconv.Atoi(line)
 		check(parseError)
 		sum += recSum(0, parsedLine)
 	}
+	fmt.Println(sum)
+}
+
+func recSumConcurrent(currentSum int, mass int, out chan int) {
+	sum := recSum(currentSum, mass)
+	out <- sum
+}
+
+func day1bConcurrent() {
+	masses := getFileAsStringArray("day1.txt")
+	sum := 0
+	sumChan := make(chan int)
+	massesToCount := len(masses)
+	for _, m := range masses {
+		parsed, err := strconv.Atoi(m)
+		check(err)
+		go recSumConcurrent(0, parsed, sumChan)
+	}
+
+	for i := 0; i < massesToCount; i++ {
+		sum += <-sumChan
+	}
+
 	fmt.Println(sum)
 }
