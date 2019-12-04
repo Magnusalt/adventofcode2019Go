@@ -31,5 +31,5 @@ func getNextLine(scanner *bufio.Scanner) string {
 }
 
 func main() {
-	firstDay4()
+	secondDay4()
 }
