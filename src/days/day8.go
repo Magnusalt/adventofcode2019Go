@@ -1,9 +1,14 @@
-package main
+package days
 
-import "fmt"
+import (
+	"fmt"
 
-func day8a() {
-	imgData := getFileAsStringArray("day8.txt")[0]
+	"../helpers"
+)
+
+// Day8a solves first puzzle of day 8
+func Day8a() {
+	imgData := helpers.GetFileAsStringArray("inputs/day8.txt")[0]
 	var imgDataInt []int
 
 	for _, p := range imgData {

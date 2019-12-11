@@ -1,4 +1,4 @@
-package main
+package days
 
 import (
 	"bufio"
@@ -6,10 +6,12 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"../helpers"
 )
 
 func day5a() {
-	instructions := strings.Split(getFileAsStringArray("day5.txt")[0], ",")
+	instructions := strings.Split(helpers.GetFileAsStringArray("inputs/day5.txt")[0], ",")
 
 	instructionPointer := 0
 	reader := bufio.NewReader(os.Stdin)
@@ -35,7 +37,7 @@ func day5a() {
 			jumpDelta += 4
 		case '3':
 			input, err := reader.ReadString('\r')
-			check(err)
+			helpers.Check(err)
 			intInput := parseInt(input[:1])
 			instructions = writeValue(intInput, instructions, instructionPointer+1)
 			jumpDelta += 2
@@ -97,7 +99,7 @@ func readValue(instructions []string, pos int, mode byte) int {
 
 func parseInt(n string) int {
 	v, er := strconv.Atoi(n)
-	check(er)
+	helpers.Check(er)
 	return v
 }
 

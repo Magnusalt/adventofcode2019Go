@@ -1,4 +1,4 @@
-package main
+package days
 
 import (
 	"bufio"
@@ -6,11 +6,13 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"../helpers"
 )
 
 func firstDay2() {
-	f, err := os.Open("day2.txt")
-	check(err)
+	f, err := os.Open("inputs/day2.txt")
+	helpers.Check(err)
 	defer f.Close()
 	scanner := bufio.NewScanner(f)
 	scanner.Scan()
@@ -20,7 +22,7 @@ func firstDay2() {
 
 	for k, v := range stringInstructions {
 		parsed, err := strconv.Atoi(v)
-		check(err)
+		helpers.Check(err)
 		intInstructions[k] = parsed
 	}
 
@@ -77,15 +79,15 @@ func getOriginalProgram(input []string) []int {
 
 	for k, v := range input {
 		parsed, err := strconv.Atoi(v)
-		check(err)
+		helpers.Check(err)
 		intInstructions[k] = parsed
 	}
 	return intInstructions
 }
 
 func secondDay2() {
-	f, err := os.Open("day2.txt")
-	check(err)
+	f, err := os.Open("inputs/day2.txt")
+	helpers.Check(err)
 	defer f.Close()
 	scanner := bufio.NewScanner(f)
 	scanner.Scan()

@@ -1,4 +1,4 @@
-package main
+package days
 
 import (
 	"fmt"
@@ -6,6 +6,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"../helpers"
 )
 
 type direction struct {
@@ -23,7 +25,7 @@ func parseCable(line []string) []direction {
 	for _, strDir := range line {
 		l := strDir[1:]
 		length, e := strconv.Atoi(l)
-		check(e)
+		helpers.Check(e)
 		d := strDir[:1]
 		cable = append(cable, direction{length, d})
 	}
@@ -65,7 +67,7 @@ func (a ByValue) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByValue) Less(i, j int) bool { return a[i] < a[j] }
 
 func firstDay3() {
-	lines := getFileAsStringArray("day3.txt")
+	lines := helpers.GetFileAsStringArray("inputs/day3.txt")
 
 	cable1 := parseCable(strings.Split(lines[0], ","))
 	cable2 := parseCable(strings.Split(lines[1], ","))
@@ -87,7 +89,7 @@ func firstDay3() {
 }
 
 func secondDay3() {
-	lines := getFileAsStringArray("day3.txt")
+	lines := helpers.GetFileAsStringArray("inputs/day3.txt")
 
 	cable1 := parseCable(strings.Split(lines[0], ","))
 	cable2 := parseCable(strings.Split(lines[1], ","))
