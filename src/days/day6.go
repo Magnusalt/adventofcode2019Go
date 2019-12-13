@@ -1,8 +1,10 @@
-package main
+package days
 
 import (
 	"fmt"
 	"strings"
+
+	"../helpers"
 )
 
 type orbiter struct {
@@ -23,9 +25,10 @@ func orbitsContains(orbiters []orbiter, name string) (bool, *orbiter) {
 	return false, nil
 }
 
-func day6a() {
+// Day6a solves day 6 :)
+func Day6a() {
 	var uniqueOrbiters []orbiter
-	var orbits = getFileAsStringArray("day6test.txt")
+	var orbits = helpers.GetFileAsStringArray("day6test.txt")
 
 	for _, o := range orbits {
 		rel := strings.Split(o, ")")
