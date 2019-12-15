@@ -7,56 +7,55 @@ import (
 	"../helpers"
 )
 
-type orbiter struct {
-	name  string
-	toCOM *orbiter
-}
-
-func (o orbiter) hasName(name string) bool {
-	return o.name == name
-}
-
-func orbitsContains(orbiters []orbiter, name string) (bool, *orbiter) {
-	for _, o := range orbiters {
-		if o.hasName(name) {
-			return true, &o
-		}
-	}
-	return false, nil
-}
-
 // Day6a solves day 6 :)
 func Day6a() {
-	var uniqueOrbiters []orbiter
-	var orbits = helpers.GetFileAsStringArray("day6test.txt")
-
+	childOrbiters := make(map[string]string)
+	var orbits = helpers.GetFileAsStringArray("inputs/day6.txt")
 	for _, o := range orbits {
-		rel := strings.Split(o, ")")
-		containsParent, _ := orbitsContains(uniqueOrbiters, rel[0])
-		if !containsParent {
-			uniqueOrbiters = append(uniqueOrbiters, orbiter{name: rel[0], toCOM: nil})
-		} else {
-
-		}
-		containsChild, child := orbitsContains(uniqueOrbiters, rel[1])
-		if !containsChild {
-			_, parent := orbitsContains(uniqueOrbiters, rel[0])
-			uniqueOrbiters = append(uniqueOrbiters, orbiter{name: rel[1], toCOM: parent})
-		} else {
-			if child.toCOM == nil {
-				p := orbiter{name: rel[0], toCOM: nil}
-				uniqueOrbiters = append(uniqueOrbiters, p)
-				child.toCOM = p
-			}
-		}
+		relation := strings.Split(o, ")")
+		childOrbiters[relation[1]] = relation[0]
 	}
-
-	for _, uo := range uniqueOrbiters {
-		if uo.toCOM != nil {
-			fmt.Println(uo.name, (*uo.toCOM).name)
-		} else {
-			fmt.Println(uo.name)
+	total := 0
+	for k := range childOrbiters {
+		childCount := 0
+		current := k
+		for current != "COM" {
+			current = childOrbiters[current]
+			childCount++
 		}
-
+		total += childCount
 	}
+	fmt.Println(total)
+}
+
+// Day6b solves day 6 b :)
+func Day6b() {
+	childOrbiters := make(map[string]string)
+	var orbits = helpers.GetFileAsStringArray("inputs/day6test.txt")
+	for _, o := range orbits {
+		relation := strings.Split(o, ")")
+		childOrbiters[relation[1]] = relation[0]
+	}
+	youPath := traceOrbit("YOU", childOrbiters)
+	sanPath := traceOrbit("SAN", childOrbiters)
+	youPathIndex := len(youPath) - 1
+	sanPathIndex := len(sanPath) - 1
+	for youPath[youPathIndex] == sanPath[sanPathIndex] {
+		sanPathIndex--
+		youPathIndex--
+	}
+	// the path indices are reduced one extra time to account for the SAN and YOU orbits
+	youPathDistanceToFork := len(youPath[:youPathIndex])
+	sanPathDistanceToFork := len(sanPath[:sanPathIndex])
+	fmt.Println(youPathDistanceToFork + sanPathDistanceToFork)
+}
+
+func traceOrbit(start string, orbitMap map[string]string) []string {
+	var path []string
+	current := start
+	for current != "COM" {
+		path = append(path, current)
+		current = orbitMap[current]
+	}
+	return path
 }
