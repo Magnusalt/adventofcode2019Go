@@ -3,6 +3,7 @@ package helpers
 import (
 	"bufio"
 	"os"
+	"strings"
 )
 
 // Check if error is nil app will panic
@@ -23,4 +24,9 @@ func GetFileAsStringArray(path string) []string {
 		res = append(res, scanner.Text())
 	}
 	return res
+}
+
+// GetIntCodeInstructions turns the puzzle input into an IntCode compter program
+func GetIntCodeInstructions(path string) []string {
+	return strings.Split(GetFileAsStringArray(path)[0], ",")
 }
