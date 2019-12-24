@@ -9,6 +9,7 @@ import (
 // RunProgram takes an IntCode program and runs it
 func RunProgram(instructions []string, inputBuffer []int, interactiveMode bool, programCounterStart int) ([]int, bool, int) {
 	instructionPointer := programCounterStart
+	relativeBase := 0
 	opCode := getOpcode(instructions[instructionPointer])
 	var output []int
 	for opCode != "99" {
@@ -50,7 +51,6 @@ func RunProgram(instructions []string, inputBuffer []int, interactiveMode bool, 
 			} else {
 				output = append(output, vToOutput)
 			}
-
 			jumpDelta += 2
 		case '5':
 			v1 := readValue(instructions, instructionPointer+1, opCode[2])
@@ -86,6 +86,10 @@ func RunProgram(instructions []string, inputBuffer []int, interactiveMode bool, 
 				instructions = writeValue(0, instructions, instructionPointer+3)
 			}
 			jumpDelta += 4
+		case '9':
+			v1 := readValue(instructions, instructionPointer+1, '1')
+			relativeBase += v1
+			jumpDelta += 2
 		}
 
 		instructionPointer += jumpDelta
