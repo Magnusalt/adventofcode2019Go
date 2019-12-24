@@ -8,5 +8,5 @@ import (
 func Day5() {
 	instructions := helpers.GetIntCodeInstructions("inputs/day5.txt")
 
-	helpers.RunProgram(instructions, make([]int, 0), true)
+	helpers.RunProgram(instructions, make([]int, 0), true, 0)
 }

@@ -7,10 +7,10 @@ import (
 )
 
 // RunProgram takes an IntCode program and runs it
-func RunProgram(instructions []string, inputBuffer []int, interactiveMode bool) (outputBuffer []int) {
-	instructionPointer := 0
+func RunProgram(instructions []string, inputBuffer []int, interactiveMode bool, programCounterStart int) ([]int, bool, int) {
+	instructionPointer := programCounterStart
 	opCode := getOpcode(instructions[instructionPointer])
-
+	var output []int
 	for opCode != "99" {
 		jumpDelta := 0
 		currentInstruction := opCode[4]
@@ -34,8 +34,12 @@ func RunProgram(instructions []string, inputBuffer []int, interactiveMode bool) 
 				_, err := fmt.Scan(&i)
 				Check(err)
 			} else {
-				i = inputBuffer[0]
-				inputBuffer = inputBuffer[1:]
+				if len(inputBuffer) > 0 {
+					i = inputBuffer[0]
+					inputBuffer = inputBuffer[1:]
+				} else {
+					return output, false, instructionPointer
+				}
 			}
 			instructions = writeValue(i, instructions, instructionPointer+1)
 			jumpDelta += 2
@@ -44,7 +48,7 @@ func RunProgram(instructions []string, inputBuffer []int, interactiveMode bool) 
 			if interactiveMode {
 				fmt.Println("Computer says: ", vToOutput)
 			} else {
-				outputBuffer = append(outputBuffer, vToOutput)
+				output = append(output, vToOutput)
 			}
 
 			jumpDelta += 2
@@ -88,7 +92,7 @@ func RunProgram(instructions []string, inputBuffer []int, interactiveMode bool) 
 
 		opCode = getOpcode(instructions[instructionPointer])
 	}
-	return outputBuffer
+	return output, true, instructionPointer
 }
 
 func getOpcode(ins string) string {

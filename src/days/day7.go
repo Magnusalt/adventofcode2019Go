@@ -6,7 +6,7 @@ import (
 	"../helpers"
 )
 
-func generatePermutations(k int, a []int, out chan []int) {
+func generatePermutations(k int, a []int, out *[][]int) {
 	if k == 1 {
 		return
 	}
@@ -18,13 +18,14 @@ func generatePermutations(k int, a []int, out chan []int) {
 			ai := a[i]
 			a[i] = a[k-1]
 			a[k-1] = ai
-			out <- a
 		} else {
 			a0 := a[0]
 			a[0] = a[k-1]
 			a[k-1] = a0
-			out <- a
 		}
+		res := make([]int, 5)
+		copy(res, a)
+		*out = append(*out, res)
 		generatePermutations(k-1, a, out)
 	}
 }
@@ -32,26 +33,71 @@ func generatePermutations(k int, a []int, out chan []int) {
 // Day7a solves first puzzle day7
 func Day7a() {
 	a := []int{0, 1, 2, 3, 4}
-	nbrOfPosibilities := 120 // 5!
-	reporter := make(chan []int)
-	go generatePermutations(len(a), a, reporter)
+	var perm [][]int
+	generatePermutations(len(a), a, &perm)
 
 	instructions := helpers.GetIntCodeInstructions("inputs/day7.txt")
 	max := 0
-	for i := 0; i < nbrOfPosibilities-1; i++ {
-		combination := <-reporter
+	for _, combination := range perm {
 		fmt.Println(combination)
 		inputs := []int{0, 0}
 		output := []int{0}
 		for i := 0; i < 5; i++ {
 			inputs[0] = combination[i]
 			inputs[1] = output[0]
-			output = helpers.RunProgram(instructions, inputs, false)
+			output, _, _ = helpers.RunProgram(instructions, inputs, false, 0)
 			fmt.Println(output)
 		}
 		fmt.Println("====")
 		if output[0] > max {
 			max = output[0]
+		}
+	}
+	fmt.Println(max)
+}
+
+// Day7b solves second part of day 7
+func Day7b() {
+	a := []int{5, 6, 7, 8, 9}
+	var perm [][]int
+	generatePermutations(len(a), a, &perm)
+
+	max := 0
+
+	for _, combination := range perm {
+
+		fmt.Println(combination)
+
+		inputs := []int{0, 0}
+		outputs := make([][]int, 5)
+		instructions := make([][]string, 5)
+		pcs := []int{0, 0, 0, 0, 0}
+		reachedEnd := false
+
+		for i := 0; i < 5; i++ {
+			inputs[0] = combination[i]
+			if i == 0 {
+				inputs[1] = 0
+			} else {
+				inputs[1] = outputs[i-1][0]
+			}
+			instructions[i] = helpers.GetIntCodeInstructions("inputs/day7.txt")
+			outputs[i], reachedEnd, pcs[i] = helpers.RunProgram(instructions[i], inputs, false, pcs[i])
+		}
+		for !reachedEnd {
+			for i := 0; i < 5; i++ {
+				if i == 0 {
+					inputs = outputs[4]
+				} else {
+					inputs = outputs[i-1]
+				}
+				halted := false
+				outputs[i], halted, pcs[i] = helpers.RunProgram(instructions[i], inputs, false, pcs[i])
+				reachedEnd = halted && i == 4
+			}
+		}
+		if outputs[4][0] > max {
+			max = outputs[4][0]
 		}
 	}
 	fmt.Println(max)
